@@ -34,3 +34,17 @@ document.querySelectorAll('.consult-btn').forEach(btn=>{
     window.open(`https://wa.me/${nomor}?text=${text}`,'_blank','noopener');
   });
 });
+document.querySelectorAll('.scroll-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const dir=parseInt(btn.dataset.dir||'1',10);
+    const header=btn.closest('.group-header');
+    let grid=header&&header.nextElementSibling;
+    if(!(grid&&grid.classList.contains('catalog-grid'))){
+      grid=header?.parentElement?.querySelector('.catalog-grid');
+    }
+    if(grid){
+      const amount=Math.max(grid.clientWidth*0.9,200);
+      grid.scrollBy({left:dir*amount,behavior:'smooth'});
+    }
+  });
+});
