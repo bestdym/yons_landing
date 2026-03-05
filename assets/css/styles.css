@@ -702,6 +702,12 @@ footer {
   gap: 10px;
   flex-wrap: wrap
 }
+/* Improve desktop + mobile form layout */
+.actions{justify-content:flex-start}
+@media (max-width: 760px){
+  .fields{grid-template-columns:1fr}
+  .actions{justify-content:center}
+}
 
 .btn {
   display: inline-flex;
@@ -926,8 +932,13 @@ footer {
   }
 
   .catalog-card {
-    flex: 0 0 86%
+    flex: 0 0 88%;
+    border-radius: 14px;
   }
+  .catalog-media img{height:160px}
+  .catalog-body{text-align:left}
+  .group-title{font-size:18px}
+  .scroll-fab{width:32px;height:32px}
 }
 
 .map-card {
@@ -939,4 +950,8 @@ footer {
   height: 420px;
   border: 0;
   border-radius: 12px
+}
+
+@media (max-width: 600px){
+  .price-disclaimer{font-size:12px}
 }
