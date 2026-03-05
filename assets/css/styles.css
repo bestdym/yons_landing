@@ -751,6 +751,10 @@ footer {
   margin-top: 18px
 }
 
+.group {
+  min-width: 0;
+}
+
 .group-title {
   font-weight: 800;
   font-size: 20px;
