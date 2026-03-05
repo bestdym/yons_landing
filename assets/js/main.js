@@ -51,11 +51,11 @@ if(consultForm){
   consultForm.addEventListener('submit',e=>{
     e.preventDefault();
     const nama=document.getElementById('nama')?.value?.trim()||'';
-    const alamat=document.getElementById('alamat')?.value?.trim()||'';
+    const jenis=document.getElementById('jenis')?.value?.trim()||'';
     const konsultasi=document.getElementById('konsultasi')?.value?.trim()||'';
-    if(!nama||!alamat||!konsultasi){return;}
-    const nomor='6281234567890';
-    const text=`Halo Pak Yono, saya ingin konsultasi.%0A%0ANama: ${encodeURIComponent(nama)}%0AAlamat: ${encodeURIComponent(alamat)}%0ADetail: ${encodeURIComponent(konsultasi)}`;
+    if(!nama||!jenis||!konsultasi){return;}
+    const nomor='6285156208963';
+    const text=`Halo Pak Yono, saya ingin konsultasi.%0A%0ANama: ${encodeURIComponent(nama)}%0AJenis: ${encodeURIComponent(jenis)}%0ADetail: ${encodeURIComponent(konsultasi)}`;
     const url=`https://wa.me/${nomor}?text=${text}`;
     window.open(url,'_blank','noopener');
   });
@@ -64,7 +64,7 @@ document.querySelectorAll('.consult-btn').forEach(btn=>{
   btn.addEventListener('click',()=>{
     const service=btn.getAttribute('data-service')||'Layanan';
     const price=btn.getAttribute('data-price')||'';
-    const nomor='6281234567890';
+    const nomor='6285156208963';
     const text=`Halo Pak Yono, saya tertarik layanan ${encodeURIComponent(service)}.%0AHarga: ${encodeURIComponent(price)}.%0ABoleh info ketersediaan dan estimasi waktu?`;
     window.open(`https://wa.me/${nomor}?text=${text}`,'_blank','noopener');
   });
