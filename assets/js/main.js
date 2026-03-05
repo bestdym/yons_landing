@@ -1,14 +1,49 @@
 const burger=document.getElementById('burger');
 const menu=document.getElementById('menu');
-if(burger&&menu){burger.addEventListener('click',()=>{menu.classList.toggle('open')});}
-const setActive=()=>{
-  const path=location.pathname.split('/').pop()||'index.html';
-  document.querySelectorAll('nav.menu a[data-nav]').forEach(a=>{
-    const href=a.getAttribute('href');
-    a.classList.toggle('active', href && (href===path || (path==='index.html' && href==='index.html')));
-  });
+let navBackdrop=document.getElementById('nav-backdrop');
+if(!navBackdrop){navBackdrop=document.createElement('div');navBackdrop.id='nav-backdrop';document.body.appendChild(navBackdrop);}
+const toggleMenu=(open)=>{
+  if(!(burger&&menu))return;
+  const isOpen=(open!==undefined)?open:!menu.classList.contains('open');
+  menu.classList.toggle('open',isOpen);
+  document.body.classList.toggle('menu-open',isOpen);
+  navBackdrop.classList.toggle('show',isOpen);
 };
-setActive();
+if(burger&&menu){
+  burger.addEventListener('click',()=>toggleMenu());
+  navBackdrop.addEventListener('click',()=>toggleMenu(false));
+  document.querySelectorAll('#menu a').forEach(a=>a.addEventListener('click',()=>toggleMenu(false)));
+}
+// Scrollspy active for single-page anchors
+const navLinks=[...document.querySelectorAll('nav.menu a[data-nav]')];
+const ids=navLinks.map(a=>a.getAttribute('href')).filter(Boolean).map(h=>h.startsWith('#')?h.slice(1):'').filter(Boolean);
+const sections=ids.map(id=>document.getElementById(id)).filter(Boolean);
+const activate=(id)=>{
+  navLinks.forEach(a=>a.classList.toggle('active', a.getAttribute('href')===`#${id}`));
+};
+if(sections.length){
+  const io=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ activate(e.target.id); }
+    });
+  },{rootMargin:'-40% 0px -50% 0px', threshold:0.01});
+  sections.forEach(s=>io.observe(s));
+}
+// Smooth scroll for in-page anchors
+navLinks.forEach(a=>{
+  const href=a.getAttribute('href')||'';
+  if(href.startsWith('#')){
+    a.addEventListener('click',e=>{
+      e.preventDefault();
+      const id=href.slice(1);
+      const el=document.getElementById(id);
+      if(el){
+        const y=el.getBoundingClientRect().top + window.scrollY - 70;
+        window.scrollTo({top:y,behavior:'smooth'});
+      }
+    });
+  }
+});
 const year=document.getElementById('year');
 if(year){year.textContent=new Date().getFullYear();}
 const consultForm=document.getElementById('consultForm');
@@ -47,4 +82,47 @@ document.querySelectorAll('.scroll-btn').forEach(btn=>{
       grid.scrollBy({left:dir*amount,behavior:'smooth'});
     }
   });
+});
+// Overlay scroll-fab inside catalog-wrap
+const wraps=document.querySelectorAll('.catalog-wrap');
+wraps.forEach(wrap=>{
+  const grid=wrap.querySelector('.catalog-grid');
+  const leftBtn=wrap.querySelector('.scroll-fab.left');
+  const rightBtn=wrap.querySelector('.scroll-fab.right');
+  if(!grid||!leftBtn||!rightBtn) return;
+  const update=()=>{
+    const max=Math.max(0, grid.scrollWidth-grid.clientWidth);
+    const atStart=grid.scrollLeft<=1;
+    const atEnd=grid.scrollLeft>=max-1;
+    const noOverflow=max<=1;
+    wrap.classList.toggle('at-start',atStart);
+    wrap.classList.toggle('at-end',atEnd);
+    wrap.classList.toggle('no-overflow',noOverflow);
+    if(noOverflow){
+      leftBtn.setAttribute('hidden','');
+      rightBtn.setAttribute('hidden','');
+    }else{
+      leftBtn.removeAttribute('hidden');
+      rightBtn.removeAttribute('hidden');
+      leftBtn.toggleAttribute('disabled',atStart);
+      rightBtn.toggleAttribute('disabled',atEnd);
+    }
+  };
+  update();
+  grid.addEventListener('scroll',update,{passive:true});
+  // Observe size changes
+  if('ResizeObserver' in window){
+    const ro=new ResizeObserver(()=>update());
+    ro.observe(grid);
+  }else{
+    window.addEventListener('resize',update);
+  }
+  // Recalculate after images loaded
+  grid.querySelectorAll('img').forEach(img=>{
+    if(!img.complete){ img.addEventListener('load',update,{once:true}); }
+  });
+  // Extra tick for fonts/paint
+  setTimeout(update,500);
+  leftBtn.addEventListener('click',()=>grid.scrollBy({left:-Math.max(grid.clientWidth*0.9,200),behavior:'smooth'}));
+  rightBtn.addEventListener('click',()=>grid.scrollBy({left: Math.max(grid.clientWidth*0.9,200),behavior:'smooth'}));
 });
