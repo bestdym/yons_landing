@@ -91,19 +91,31 @@ wraps.forEach(wrap=>{
   const rightBtn=wrap.querySelector('.scroll-fab.right');
   if(!grid||!leftBtn||!rightBtn) return;
   const update=()=>{
-    const max=Math.max(0, grid.scrollWidth-grid.clientWidth);
+    const cardCount=grid.querySelectorAll('.catalog-card').length;
+    const desktop=window.innerWidth>=900;
+    const hideRightByCount=desktop && cardCount<4;
+    const delta=Math.max(0, grid.scrollWidth-grid.clientWidth);
     const atStart=grid.scrollLeft<=1;
-    const atEnd=grid.scrollLeft>=max-1;
-    const noOverflow=max<=1;
+    const atEnd=grid.scrollLeft>=delta-1;
+    const noOverflow=(delta<=8);
     wrap.classList.toggle('at-start',atStart);
     wrap.classList.toggle('at-end',atEnd);
     wrap.classList.toggle('no-overflow',noOverflow);
     if(noOverflow){
       leftBtn.setAttribute('hidden','');
-      rightBtn.setAttribute('hidden','');
+      if(hideRightByCount){
+        rightBtn.setAttribute('hidden','');
+      }else{
+        rightBtn.removeAttribute('hidden');
+      }
     }else{
+      // There is overflow
       leftBtn.removeAttribute('hidden');
-      rightBtn.removeAttribute('hidden');
+      if(hideRightByCount){
+        rightBtn.setAttribute('hidden','');
+      }else{
+        rightBtn.removeAttribute('hidden');
+      }
       leftBtn.toggleAttribute('disabled',atStart);
       rightBtn.toggleAttribute('disabled',atEnd);
     }
