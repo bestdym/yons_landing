@@ -387,7 +387,8 @@ section {
   border-radius: 12px;
   background: var(--card);
   color: var(--text);
-  font-weight: 700
+  font-weight: 800;
+  font-family: inherit
 }
 
 .icon-btn:hover {
@@ -718,12 +719,23 @@ footer {
   color: var(--text);
   border-radius: 12px;
   padding: 12px 14px;
-  outline: none
+  outline: none;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5
 }
 
 .field textarea {
   min-height: 120px;
   resize: vertical
+}
+
+.field input::placeholder,
+.field textarea::placeholder{
+  color: var(--muted);
+  opacity: 1;
+  font-weight: 600;
+  font-family: inherit
 }
 
 .actions {
